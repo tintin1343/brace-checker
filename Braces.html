@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Braces</title>
+		<style>
+			#result {
+				width: 350px;
+				height: 18px;
+				border: solid 2px #eee;
+			}
+		</style>
+	</head>
+	<body>
+		<h3>Simple Brace Matching Checker</h3>
+		<label for="arrToCheck">Paste braces (seperated by ',') here: </label>
+		<input id="arrToCheck" type="text" size="50" placeholder="eg. '({[]})',  '({[]}(', ..." oninput="test(this.value)">
+		<p>Results: </p><p id="result"></p>
+
+		<script type="text/javascript">
+
+		test = (string) => {
+			const re = /\s*,\s*/;
+			document.getElementById('result').innerHTML = braces(string.split(re)).join(',');
+		};
+
+		const testArr = ['({[]})',  '({[]}(', '{}', '}', '({[([{(([{{}}])}])]})', '({[]}]'];
+
+		braces = (arr) => {
+
+			// convert braces to numbers to make it easier for searching
+			const convertor = {
+				'(': 1,
+				')': -1,
+				'{': 2,
+				'}': -2,
+				'[': 3,
+				']': -3
+			};
+			convert = (e) => {
+				return convertor[e];
+			};
+
+			// no need to search all elements as long as there's no balance
+			// if want to know the position of unbalance, just return min or max to indicate
+			searchForUnbalance = (arr) => {
+				let min = 0;
+				let max = arr.length - 1;
+				while (min < max) {
+					if (arr[min] + arr[max] != 0) {
+						return true;
+					}
+					else {
+						return false;
+					}
+					min += 1;
+					max -= 1;
+				}
+			};
+
+			// check balance
+			check = (str) => {
+				// every opening brace must have a closing brace
+				if (str.length % 2 == 1) {
+					return 'NO';
+				}
+
+				const convertedStr = str.split("").map(e => convert(e));
+				console.log(convertedStr);
+				if (searchForUnbalance(convertedStr)) {
+					return 'NO';
+				}
+
+				return 'YES';
+			};
+			return arr.map(str => check(str));
+		};
+		console.log(braces(testArr));
+		</script>
+	</body>
+</html>
